@@ -132,7 +132,11 @@ def upload_text_file(request):
         form = TextFileUploadForm(request.POST, request.FILES)
         if form.is_valid():
             text_file = request.FILES['file']
-            text_content = text_file.read().decode('utf-8')
+            raw_data = text_file.read()
+            try:
+                text_content = raw_data.decode('utf-8')
+            except UnicodeDecodeError:
+                text_content = raw_data.decode('utf-16', errors='replace')
             
             conversion = form.save(commit=False)
             conversion.text = text_content
