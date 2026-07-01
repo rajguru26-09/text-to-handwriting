@@ -1,12 +1,14 @@
 Django>=4.2,<5.0
 Pillow>=10.0
 reportlab>=4.0
-torch>=2.0
-torchvision>=0.15
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.0.1+cpu
+torchvision==0.15.2+cpu
 numpy>=1.24
-opencv-python>=4.8
+opencv-python-headless>=4.8
 matplotlib>=3.7
 python-magic>=0.4.27
 gunicorn
 whitenoise
 dj-database-url
+psycopg2-binary

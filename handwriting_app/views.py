@@ -53,11 +53,20 @@ def process_conversion(request, conversion_id):
     return render(request, 'processing.html', {'conversion': conversion})
 
 
+import threading
+from django.db import connection
+
 def _process_conversion_async(conversion):
     conversion.status = 'pending'
     conversion.save()
     
-    process_conversion_task.delay(conversion.id)
+    def run_task(conv_id):
+        try:
+            process_conversion_task(conv_id)
+        finally:
+            connection.close()
+            
+    threading.Thread(target=run_task, args=(conversion.id,)).start()
     
     return JsonResponse({'status': 'processing', 'redirect_url': f'/result/{conversion.id}/'})
 

@@ -35,3 +35,4 @@ Thumbs.db
 # Misc
 temp_github_repo/
 *.sqlite3
+control/

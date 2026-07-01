@@ -17,7 +17,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_celery_results',
     'handwriting_app',
 ]
 
@@ -82,15 +81,3 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 HANDWRITING_MODELS_DIR = BASE_DIR / 'models'
 HANDWRITING_OUTPUT_DIR = BASE_DIR / 'media' / 'handwritten'
-
-# Celery Configuration
-CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL', f"filesystem://")
-CELERY_BROKER_TRANSPORT_OPTIONS = {
-    'data_folder_in': os.environ.get('CELERY_DATA_FOLDER_IN', os.path.join(BASE_DIR, 'broker', 'out')),
-    'data_folder_out': os.environ.get('CELERY_DATA_FOLDER_OUT', os.path.join(BASE_DIR, 'broker', 'out')),
-    'data_folder_processed': os.environ.get('CELERY_DATA_FOLDER_PROCESSED', os.path.join(BASE_DIR, 'broker', 'processed'))
-}
-CELERY_RESULT_BACKEND = os.environ.get('CELERY_RESULT_BACKEND', 'django-db')
-CELERY_CACHE_BACKEND = 'django-cache'
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'

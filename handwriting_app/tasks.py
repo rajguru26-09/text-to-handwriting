@@ -1,13 +1,11 @@
 import os
 import time
 from PIL import Image
-from celery import shared_task
 from django.conf import settings
 from django.utils import timezone
 from .models import Conversion, OutputFormat
 from .services.synthesis import HandwritingConfig, create_handwriting_synthesizer
 
-@shared_task
 def process_conversion_task(conversion_id):
     conversion = Conversion.objects.get(id=conversion_id)
     conversion.status = 'processing'
