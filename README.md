@@ -1,0 +1,53 @@
+# Text2Handwriting Converter
+
+A lightweight, robust web application that converts typed digital text into realistic, customizable handwritten documents. Built with Django and optimized for easy deployment on free cloud hosting platforms like Render or Railway.
+
+##  Features
+- **Multi-Language Support**: Converts English, Hindi, and Sanskrit text.
+- **Realistic Rendering**: Adjust line variance, word spacing, character spacing, and pressure variance to create unique and natural-looking handwriting.
+- **Multiple Output Formats**: Export your generated handwriting as high-quality PNG images or compiled PDF documents.
+- **Customizable Layouts**: Fine-tune margins, line spacing, ink color, and paper color. Support for standard page sizes (A4, A5, Letter) and custom dimensions.
+- **Cloud-Ready**: Stripped of heavy dependencies (like Celery and GPU-bound PyTorch) and optimized with Python `threading` for seamless deployment on free-tier Web Services.
+
+##  Tech Stack
+- **Backend**: Python 3, Django 4.2
+- **Image Processing**: Pillow (PIL), OpenCV-Python-Headless
+- **Machine Learning / Synthesis**: PyTorch (CPU-only to save deployment space)
+- **Frontend**: HTML5, Bootstrap 5, Custom CSS (Glassmorphism design)
+- **Database**: SQLite3 (Local) / PostgreSQL (Production via `dj-database-url`)
+
+##  Local Development Setup
+
+If you want to run this project on your local machine, follow these steps:
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/rajguru26-09/text-to-handwriting.git)
+   cd text-to-handwriting
+   ```
+
+2. **Create a virtual environment**
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows use: venv\Scripts\activate
+   ```
+
+3. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Run migrations**
+   ```bash
+   python manage.py migrate
+   ```
+
+5. **Start the development server**
+   ```bash
+   python manage.py runserver
+   ```
+   *The app will be available at http://127.0.0.1:8000*
+
+
+## 📝 License
+This project is open-source and available under the MIT License.
