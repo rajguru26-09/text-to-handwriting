@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# Media and Static
+media/
+staticfiles/
+# However, if there are base models in models/, they should be kept, but user generated ones shouldn't.
+# We will keep models/ but ignore handwritten outputs.
+
+# Virtual Environments
+venv/
+venv_win/
+env/
+.env
+
+# Celery
+broker/
+celerybeat-schedule
+
+# IDEs and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Misc
+temp_github_repo/
+*.sqlite3

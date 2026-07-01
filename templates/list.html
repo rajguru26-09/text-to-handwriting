@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block title %}Conversion History - Text to Handwriting{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3><i class="bi bi-clock-history me-2"></i>Conversion History</h3>
+    <a href="{% url 'handwriting:index' %}" class="btn btn-primary">
+        <i class="bi bi-plus-circle me-1"></i>New Conversion
+    </a>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body p-0">
+        {% if conversions %}
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Preview</th>
+                        <th>Text Preview</th>
+                        <th>Language</th>
+                        <th>Style</th>
+                        <th>Format</th>
+                        <th>Status</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for conversion in conversions %}
+                    <tr>
+                        <td>
+                            {% if conversion.output_png %}
+                            <a href="{% url 'handwriting:conversion_result' conversion.id %}" class="text-decoration-none">
+                                <img src="{{ conversion.output_png.url }}" alt="Preview" class="img-thumbnail" style="width: 60px; height: 80px; object-fit: cover;">
+                            </a>
+                            {% else %}
+                            <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="text-truncate" style="max-width: 300px;" title="{{ conversion.text|truncatewords:50 }}">
+                                {{ conversion.text|truncatewords:20|linebreaksbr }}
+                            </div>
+                        </td>
+                        <td>{{ conversion.get_language_display }}</td>
+                        <td>{{ conversion.get_style_display }}</td>
+                        <td>{{ conversion.get_output_format_display }}</td>
+                        <td>
+                            <span class="badge bg-{% if conversion.status == 'completed' %}success{% elif conversion.status == 'failed' %}danger{% elif conversion.status == 'processing' %}warning{% else %}secondary{% endif %}">
+                                {{ conversion.get_status_display }}
+                            </span>
+                        </td>
+                        <td>{{ conversion.created_at|date:"M d, Y H:i" }}</td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <a href="{% url 'handwriting:conversion_result' conversion.id %}" class="btn btn-outline-primary" title="View Result">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                {% if conversion.output_png %}
+                                <a href="{% url 'handwriting:download_file' conversion.id 'png' %}" class="btn btn-outline-success" title="Download PNG">
+                                    <i class="bi bi-download"></i>
+                                </a>
+                                {% endif %}
+                                {% if conversion.output_pdf %}
+                                <a href="{% url 'handwriting:download_file' conversion.id 'pdf' %}" class="btn btn-outline-danger" title="Download PDF">
+                                    <i class="bi bi-file-earmark-pdf"></i>
+                                </a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-inbox display-1 text-muted"></i>
+            <h4 class="text-muted mt-3">No conversions yet</h4>
+            <p class="text-muted">Start by creating your first handwriting conversion.</p>
+            <a href="{% url 'handwriting:index' %}" class="btn btn-primary mt-2">
+                <i class="bi bi-plus-circle me-1"></i>Create Conversion
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

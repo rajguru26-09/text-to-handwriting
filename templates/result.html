@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block title %}Result - Text to Handwriting{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3><i class="bi bi-check-circle-fill text-success me-2"></i>Conversion Complete</h3>
+            <a href="{% url 'handwriting:index' %}" class="btn btn-outline-primary">
+                <i class="bi bi-plus-circle me-1"></i>New Conversion
+            </a>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Conversion Details</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>Language:</strong> {{ conversion.get_language_display }}<br>
+                        <strong>Page Size:</strong> {{ conversion.get_page_size_display }}
+                        {% if conversion.page_size == 'CUSTOM' %}
+                            ({{ conversion.custom_width }} × {{ conversion.custom_height }} mm)
+                        {% endif %}
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Output Format:</strong> {{ conversion.get_output_format_display }}<br>
+                        <strong>Processing Time:</strong> {{ conversion.processing_time|floatformat:2 }}s<br>
+                        <strong>Created:</strong> {{ conversion.created_at|date:"M d, Y H:i" }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <strong>Original Text:</strong>
+                        <div class="bg-light p-3 rounded mt-1 small" style="max-height: 150px; overflow-y: auto;">
+                            {{ conversion.text|linebreaks }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if conversion.output_png %}
+        <div class="card shadow-sm mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">PNG Output</h5>
+                {% if png_pages|length == 1 %}
+                <a href="{{ conversion.output_png.url }}" class="btn btn-sm btn-outline-primary" download>
+                    <i class="bi bi-download me-1"></i>Download PNG
+                </a>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    {% for page in png_pages %}
+                    <div class="col-md-6 mb-3">
+                        <div class="border rounded overflow-hidden">
+                            <img src="{{ page.url }}" alt="Page {{ forloop.counter }}" class="img-fluid handwriting-preview">
+                            <div class="bg-light p-2 d-flex justify-content-between align-items-center small">
+                                <span>Page {{ forloop.counter }}</span>
+                                {% if png_pages|length > 1 %}
+                                <a href="{{ page.url }}" class="btn btn-sm btn-outline-primary py-0" download>Download</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if conversion.output_pdf %}
+        <div class="card shadow-sm mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">PDF Output</h5>
+                <a href="{{ conversion.output_pdf.url }}" class="btn btn-sm btn-outline-primary" download>
+                    <i class="bi bi-file-earmark-pdf me-1"></i>Download PDF
+                </a>
+            </div>
+            <div class="card-body text-center">
+                <i class="bi bi-file-earmark-pdf-fill text-danger" style="font-size: 4rem;"></i>
+                <p class="mt-2">PDF document with {{ pdf_pages|default:1 }} page(s)</p>
+                <a href="{{ conversion.output_pdf.url }}" class="btn btn-primary" target="_blank">
+                    <i class="bi bi-eye me-1"></i>View PDF
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

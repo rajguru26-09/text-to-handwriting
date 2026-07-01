@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block title %}Processing - Text to Handwriting{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm text-center py-5">
+            <div class="card-body">
+                <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
+                    <span class="visually-hidden">Processing...</span>
+                </div>
+                <h4 class="mb-3">Generating Handwriting</h4>
+                <p class="text-muted mb-4">This may take a few moments depending on the text length and settings.</p>
+                
+                <div class="progress mb-3" style="height: 8px;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                         role="progressbar" style="width: 100%"></div>
+                </div>
+                
+                <div id="statusText" class="small text-muted">
+                    Initializing handwriting synthesis...
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const conversionId = '{{ conversion.id }}';
+    const statusText = document.getElementById('statusText');
+    const messages = [
+        'Initializing handwriting synthesis...',
+        'Loading language model...',
+        'Generating handwritten strokes...',
+        'Rendering pages...',
+        'Applying style variations...',
+        'Finalizing output...',
+        'Almost done...'
+    ];
+    let msgIndex = 0;
+    
+    const msgInterval = setInterval(() => {
+        if (msgIndex < messages.length) {
+            statusText.textContent = messages[msgIndex];
+            msgIndex++;
+        }
+    }, 2000);
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+
+    function startConversion() {
+        fetch(`/convert/${conversionId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrftoken,
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'processing') {
+                setTimeout(pollStatus, 2000);
+            } else if (data.status === 'completed') {
+                clearInterval(msgInterval);
+                window.location.href = data.redirect_url;
+            } else {
+                clearInterval(msgInterval);
+                showError(data.error || 'Processing failed');
+            }
+        })
+        .catch(err => {
+            clearInterval(msgInterval);
+            showError('Network error or timeout while processing.');
+            console.error('Error:', err);
+        });
+    }
+
+    function pollStatus() {
+        fetch(`/api/conversion/${conversionId}/status/`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'completed') {
+                    clearInterval(msgInterval);
+                    window.location.href = data.redirect_url;
+                } else if (data.status === 'failed') {
+                    clearInterval(msgInterval);
+                    showError(data.error_message || 'Processing failed');
+                } else {
+                    setTimeout(pollStatus, 2000);
+                }
+            })
+            .catch(err => {
+                clearInterval(msgInterval);
+                showError('Error checking status.');
+                console.error('Error:', err);
+            });
+    }
+
+    function showError(errMessage) {
+        statusText.textContent = 'Error: ' + errMessage;
+        statusText.className = 'small text-danger fw-bold';
+        const spinner = document.querySelector('.spinner-border');
+        if(spinner) {
+            spinner.classList.add('text-danger');
+            spinner.classList.remove('text-primary');
+            // Change spinner to error icon
+            spinner.className = 'bi bi-x-circle text-danger mb-3';
+            spinner.style.fontSize = '3rem';
+        }
+    }
+
+    // Start conversion on load
+    startConversion();
+});
+</script>
+{% endblock %}
