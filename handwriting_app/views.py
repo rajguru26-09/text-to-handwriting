@@ -36,11 +36,8 @@ def index(request):
     else:
         form = ConversionForm()
     
-    recent_conversions = Conversion.objects.all()[:10]
-    
     return render(request, 'index.html', {
         'form': form,
-        'recent_conversions': recent_conversions,
     })
 
 
@@ -117,11 +114,6 @@ def conversion_result(request, conversion_id):
         'png_pages': png_pages,
         'pdf_pages': pdf_pages,
     })
-
-
-def conversion_list(request):
-    conversions = Conversion.objects.all()
-    return render(request, 'list.html', {'conversions': conversions})
 
 
 def download_file(request, conversion_id, file_type):
