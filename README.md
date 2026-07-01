@@ -49,5 +49,5 @@ If you want to run this project on your local machine, follow these steps:
    *The app will be available at http://127.0.0.1:8000*
 
 
-## 📝 License
+##  License
 This project is open-source and available under the MIT License.
