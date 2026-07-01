@@ -1,6 +1,8 @@
 # Text2Handwriting Converter
 
 https://text-to2-handwriting.onrender.com
+- The website will look like it's loading forever. It usually takes about 30 to 50 seconds for the server to "wake up".
+- Once it wakes up, the website will be lightning fast for everyone using it. It only goes back to sleep after 15 straight minutes of zero traffic.
 
 A lightweight, robust web application that converts typed digital text into realistic, customizable handwritten documents. Built with Django and optimized for easy deployment on free cloud hosting platforms like Render or Railway.
 
