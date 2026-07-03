@@ -52,24 +52,7 @@ If you want to run this project on your local machine, follow these steps:
    ```
    *The app will be available at http://127.0.0.1:8000*
 
-## ☁️ Deployment (Free on Render.com)
 
-This project has been explicitly optimized to run on PaaS providers without requiring paid background workers.
-
-1. Push your code to your GitHub account.
-2. Log into [Render.com](https://render.com) and click **New > Web Service**.
-3. Connect your GitHub repository.
-4. **Configuration**:
-   - **Environment**: `Python`
-   - **Build Command**: `./build.sh`
-   - **Start Command**: `gunicorn handwriting_project.wsgi:application`
-5. **Environment Variables**:
-   - `SECRET_KEY`: Enter a long random string.
-   - `DEBUG`: `False`
-   - `ALLOWED_HOSTS`: `*` (or your specific Render URL)
-6. Click **Create Web Service**. 
-
-*(Note: Render's free tier uses ephemeral storage, so generated images will be cleared when the instance restarts, which is perfect for a temporary conversion tool!)*
 
 ## 📝 License
 This project is open-source and available under the MIT License.
